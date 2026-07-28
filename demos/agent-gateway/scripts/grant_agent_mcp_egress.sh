@@ -185,7 +185,7 @@ for cmd in curl jq gcloud; do
 	}
 done
 
-TOKEN="$(gcloud auth print-access-token)"
+TOKEN="$(gcloud auth application-default print-access-token 2>/dev/null || gcloud auth print-access-token)"
 AR_BASE="https://agentregistry.googleapis.com/v1alpha"
 IAP_BASE="https://iap.googleapis.com/v1"
 

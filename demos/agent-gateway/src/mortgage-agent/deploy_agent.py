@@ -463,7 +463,7 @@ def main() -> None:
     from agent.agent import root_agent
     from agent.otel_setup import InstrumentedAdkApp
 
-    app = InstrumentedAdkApp(agent=root_agent, enable_tracing=True)
+    app = InstrumentedAdkApp(agent=root_agent, enable_tracing=False)
 
     # Build PSC-I and agent identity config
     config = {}
@@ -572,7 +572,7 @@ def main() -> None:
                 # Make denied MCP tool calls (gateway 403) fail fast instead of
                 # hanging the turn as a broken-stream TaskGroup/TimeoutError.
                 "ADK_ENABLE_MCP_GRACEFUL_ERROR_HANDLING": "true",
-                "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY": "true",
+                "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY": "false",
                 "GOOGLE_API_PREVENT_AGENT_TOKEN_SHARING_FOR_GCP_SERVICES": "false",
                 "OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT": "true",
                 "OTEL_TRACES_SAMPLER": "parentbased_traceidratio",
