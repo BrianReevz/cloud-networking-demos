@@ -319,3 +319,8 @@ output "agent_registry_service_ids" {
   description = "Map of registered Agent Registry service resource IDs, keyed by service_id"
   value       = var.enable_agent_registry_endpoints ? module.agent_registry_endpoints[0].service_ids : null
 }
+
+output "cloudbuild_bucket" {
+  description = "Cloud Build source staging bucket name"
+  value       = google_storage_bucket.cloudbuild.name
+}

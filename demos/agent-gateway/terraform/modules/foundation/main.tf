@@ -103,3 +103,17 @@ resource "google_project_iam_member" "aiplatform_re_dns_peer" {
   member     = "serviceAccount:service-${module.project.number}@gcp-sa-aiplatform-re.iam.gserviceaccount.com"
   depends_on = [time_sleep.aiplatform_identity_propagation]
 }
+
+# Vertex AI service agents require networkservices.agentGateways.get (via
+# roles/networkservices.viewer) to validate and connect to Agent Gateway.
+resource "google_project_iam_member" "aiplatform_networkservices_viewer" {
+  project = module.project.project_id
+  role    = "roles/networkservices.viewer"
+  member  = "serviceAccount:${google_project_service_identity.aiplatform.email}"
+}
+
+resource "google_project_iam_member" "aiplatform_re_networkservices_viewer" {
+  project = module.project.project_id
+  role    = "roles/networkservices.viewer"
+  member  = "serviceAccount:service-${module.project.number}@gcp-sa-aiplatform-re.iam.gserviceaccount.com"
+}
