@@ -1,0 +1,10 @@
+[project]
+name = "internal-quotes-mcp"
+version = "1.0.0"
+description = "Internal Quotes Repository FastMCP Service on Cloud Run for Gemini Enterprise"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp>=3.2.0",
+    "starlette>=0.41.0",
+    "uvicorn>=0.34.0",
+]

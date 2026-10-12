@@ -34,7 +34,13 @@ Thumbs.db
 # Environment / secrets
 .env
 .env.*
+!.env.example
 .envrc
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
 
 # Pre-commit
 .pre-commit-cache/

@@ -1,0 +1,105 @@
+{
+  "server": {
+    "name": "internal-quotes-mcp",
+    "description": "Internal Enterprise Quote Repository & Deal Desk MCP Server running on Cloud Run (brianreevz.altostrat.com)."
+  },
+  "tools": [
+    {
+      "name": "match_eligible_quotes",
+      "description": "Read-only tool for the 2-Legged Sentinel Agent to identify open customer quotes containing a discounted vendor SKU (e.g. 'SKU-NET-MERAKI-MR36') and enqueue an Account Executive handoff alert.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Promoted vendor SKU identifier (e.g. 'SKU-NET-MERAKI-MR36')."
+          },
+          "discount_percent": {
+            "type": "number",
+            "description": "Promotional discount percentage (e.g. 20.0).",
+            "default": 20.0
+          },
+          "promo_wholesale": {
+            "type": "number",
+            "description": "New discounted wholesale unit cost (e.g. 360.0).",
+            "default": 360.0
+          }
+        },
+        "required": ["sku"]
+      },
+      "annotations": {
+        "title": "Match Eligible Open Quotes (2-Legged Read-Only)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "list_my_active_quotes",
+      "description": "Read-only tool for the 3-Legged Deal Desk Copilot to list open quotes strictly owned by the authenticated human user (e.g. 'brian@brianreevz.altostrat.com').",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user_email": {
+            "type": "string",
+            "description": "Authenticated 3-legged user identity email (e.g. 'brian@brianreevz.altostrat.com').",
+            "default": "brian@brianreevz.altostrat.com"
+          }
+        },
+        "required": ["user_email"]
+      },
+      "annotations": {
+        "title": "List My Active Quotes (3-Legged RBAC Filtered)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "reprice_quote",
+      "description": "Privileged write tool requiring 3-Legged user delegation to reprice an existing quote (e.g. Quote #1042) with a vendor promotion and target margin percentage. Blocked (403 Forbidden) for 2-Legged Sentinel Agents and cross-tenant users.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quote_id": {
+            "type": "integer",
+            "description": "Quote ID to update (e.g. 1042 for Brian's Acme Corp quote, or 9999 for Dave's Cyberdyne quote)."
+          },
+          "promo_code": {
+            "type": "string",
+            "description": "Active vendor promotion code (e.g. 'PROMO-MERAKI-20')."
+          },
+          "target_margin_percent": {
+            "type": "number",
+            "description": "Desired gross margin percentage (e.g. 18.0)."
+          },
+          "promo_wholesale_cost": {
+            "type": "number",
+            "description": "Promotional unit wholesale cost in USD (e.g. 360.0).",
+            "default": 360.0
+          },
+          "user_email": {
+            "type": "string",
+            "description": "Authenticated 3-legged user identity performing the update (e.g. 'brian@brianreevz.altostrat.com').",
+            "default": "brian@brianreevz.altostrat.com"
+          },
+          "auth_mode": {
+            "type": "string",
+            "description": "Authentication mode ('3_legged_oauth' for Copilot user delegation or '2_legged_agent_identity' for M2M Sentinel).",
+            "default": "3_legged_oauth"
+          }
+        },
+        "required": ["quote_id", "promo_code", "target_margin_percent"]
+      },
+      "annotations": {
+        "title": "Reprice Customer Quote (3-Legged Write Operation)",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    }
+  ]
+}

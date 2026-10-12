@@ -1,0 +1,104 @@
+version: "3.9"
+
+services:
+  bigredreeves-service:
+    build:
+      context: ./bigredreeves-service
+    container_name: bigredreeves-vendor-api
+    hostname: bigredreeves.com
+    environment:
+      - BIND_HOST=0.0.0.0
+      - PORT=8001
+      - XVANTAGE_CLIENT_ID=xvantage-sentinel-app
+      - XVANTAGE_CLIENT_SECRET=sec-xvantage-998811
+    ports:
+      - "127.0.0.1:8001:8001"
+    networks:
+      demo-net:
+        aliases:
+          - bigredreeves.com
+
+  internal-erp-service:
+    build:
+      context: ./internal-erp-service
+    container_name: internal-erp-idp
+    hostname: brianreevz.altostrat.com
+    environment:
+      - BIND_HOST=0.0.0.0
+      - PORT=8002
+      - GCP_PROJECT_ID=gemini-enterprise-demo-508317
+      - INTERNAL_DOMAIN=brianreevz.altostrat.com
+      - SENTINEL_INTERNAL_CLIENT_ID=sentinel-internal-reader
+      - SENTINEL_INTERNAL_CLIENT_SECRET=sec-sentinel-internal-445566
+      - COPILOT_OAUTH_CLIENT_ID=gemini-enterprise-copilot-client
+      - COPILOT_OAUTH_CLIENT_SECRET=sec-copilot-3legged-778899
+    ports:
+      - "127.0.0.1:8002:8002"
+    networks:
+      demo-net:
+        aliases:
+          - brianreevz.altostrat.com
+
+  mcp-server:
+    build:
+      context: ./mcp-server
+    container_name: gemini-mcp-server
+    depends_on:
+      - bigredreeves-service
+      - internal-erp-service
+    environment:
+      - BIND_HOST=0.0.0.0
+      - PORT=8003
+      - VENDOR_SERVICE_URL=http://bigredreeves.com:8001
+      - ERP_SERVICE_URL=http://brianreevz.altostrat.com:8002
+      - XVANTAGE_CLIENT_ID=xvantage-sentinel-app
+      - XVANTAGE_CLIENT_SECRET=sec-xvantage-998811
+    ports:
+      - "127.0.0.1:8003:8003"
+    networks:
+      - demo-net
+
+  sentinel-agent:
+    build:
+      context: ./sentinel-agent
+    container_name: sentinel-2legged-worker
+    depends_on:
+      - bigredreeves-service
+      - internal-erp-service
+    environment:
+      - VENDOR_SERVICE_URL=http://bigredreeves.com:8001
+      - ERP_SERVICE_URL=http://brianreevz.altostrat.com:8002
+      - XVANTAGE_CLIENT_ID=xvantage-sentinel-app
+      - XVANTAGE_CLIENT_SECRET=sec-xvantage-998811
+      - SENTINEL_INTERNAL_CLIENT_ID=sentinel-internal-reader
+      - SENTINEL_INTERNAL_CLIENT_SECRET=sec-sentinel-internal-445566
+      - POLL_INTERVAL_SECONDS=5
+    networks:
+      - demo-net
+
+  web-ui:
+    build:
+      context: ./web-ui
+    container_name: gemini-copilot-web-ui
+    depends_on:
+      - bigredreeves-service
+      - internal-erp-service
+      - mcp-server
+    environment:
+      - BIND_HOST=0.0.0.0
+      - PORT=8080
+      - GCP_PROJECT_ID=gemini-enterprise-demo-508317
+      - TARGET_INTERNAL_USER=brian@brianreevz.altostrat.com
+      - VENDOR_SERVICE_URL=http://bigredreeves.com:8001
+      - ERP_SERVICE_URL=http://brianreevz.altostrat.com:8002
+      - MCP_SERVICE_URL=http://mcp-server:8003
+    ports:
+      - "127.0.0.1:8004:8080"
+    networks:
+      demo-net:
+        aliases:
+          - copilot.brianreevz.altostrat.com
+
+networks:
+  demo-net:
+    driver: bridge

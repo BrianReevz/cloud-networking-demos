@@ -21,6 +21,7 @@ Contains smaller, focused demonstrations of specific networking features or inte
 
 *   **[Service Extensions GKE Gateway](demos/service-extensions-gke-gateway)**: Shows how to use Service Extensions with GKE Gateway to customize traffic management.
 *   **[Agent Gateway](demos/agent-gateway)**: Demonstrates secure cross-cloud agentic deployments with an ADK agent on Agent Runtime, MCP servers behind an internal Gateway, PSC connectivity, and Model Armor guardrails.
+*   **[Hybrid OAuth Agentic Demo](demos/hybrid-oauth-agentic-demo)**: Demonstrates the separation of 2-Legged OAuth (Machine-to-Machine Sentinel) and 3-Legged OAuth (User-Delegated Copilot) with FastMCP tools, RBAC tenant isolation, and human-attributed audit trails in Gemini Enterprise.
 
 ## [Codelabs](codelabs)
 

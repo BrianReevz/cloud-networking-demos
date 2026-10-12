@@ -1,0 +1,43 @@
+{
+  "server": {
+    "name": "xvantage-catalog-mcp",
+    "description": "Mock Xvantage Vendor Catalog & Active Promotions MCP Service (running on localhost:8001 and synced to Cloud Run for Agent Engine reachability)."
+  },
+  "tools": [
+    {
+      "name": "get_catalog_pna",
+      "description": "Retrieve baseline and current wholesale Price and Availability (PnA) for vendor SKUs (e.g., SKU-NET-MERAKI-MR36, SKU-SRV-DELL-R750).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Optional SKU identifier to filter (e.g. 'SKU-NET-MERAKI-MR36')."
+          }
+        }
+      },
+      "annotations": {
+        "title": "Get Catalog Price and Availability",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_active_promotions",
+      "description": "Retrieve currently active vendor promotions triggered on bigredreeves.com (localhost:8001).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "title": "Get Active Vendor Promotions",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ]
+}
